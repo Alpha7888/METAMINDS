@@ -55,59 +55,53 @@ export function NetWorthCard() {
 
   return (
     <Card className="bg-gradient-to-br from-primary/90 to-primary text-primary-foreground shadow-lg overflow-hidden">
-      <CardHeader>
-        <CardTitle className="text-xl font-semibold">Net Worth</CardTitle>
-        <CardDescription className="text-primary-foreground/80">
-          Your financial snapshot: Assets minus Liabilities.
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        <div className="flex flex-col md:flex-row items-center justify-between gap-8">
-          <div className="text-center md:text-left">
-            <p className="text-5xl font-bold tracking-tighter">
-              {formatCurrency(netWorth)}
-            </p>
-             <div className="flex gap-4 justify-center md:justify-start mt-2">
-              <div className="flex items-center gap-1 text-green-300">
-                <ArrowUp className="h-4 w-4" />
-                <span>{formatCurrency(totalAssets)}</span>
-              </div>
-              <div className="flex items-center gap-1 text-red-300">
-                 <ArrowDown className="h-4 w-4" />
-                <span>{formatCurrency(totalLiabilities)}</span>
-              </div>
+      <div className="grid md:grid-cols-2">
+        <div className="p-6">
+          <CardTitle className="text-xl font-semibold">Net Worth</CardTitle>
+          <CardDescription className="text-primary-foreground/80 mb-4">
+            Your financial snapshot: Assets minus Liabilities.
+          </CardDescription>
+          <p className="text-5xl font-bold tracking-tighter">
+            {formatCurrency(netWorth)}
+          </p>
+          <div className="flex gap-4 mt-2">
+            <div className="flex items-center gap-1 text-green-300">
+              <ArrowUp className="h-4 w-4" />
+              <span>{formatCurrency(totalAssets)}</span>
+            </div>
+            <div className="flex items-center gap-1 text-red-300">
+              <ArrowDown className="h-4 w-4" />
+              <span>{formatCurrency(totalLiabilities)}</span>
             </div>
           </div>
-
-          <div className="w-full md:w-3/5">
-             <Carousel
-              opts={{
-                align: "start",
-                loop: false,
-              }}
-              className="w-full max-w-sm mx-auto"
-            >
-              <CarouselContent>
-                {allAssets.map((asset, index) => (
-                  <CarouselItem key={index} className="basis-1/2 md:basis-1/2">
-                     <div className="flex items-center gap-3 p-4 rounded-lg bg-black/10 h-full">
-                        <div className="rounded-full bg-black/20 p-2">
-                          {getAssetIcon(asset.type)}
-                        </div>
-                        <div>
-                          <div className="text-sm text-primary-foreground/80 truncate">{asset.name}</div>
-                          <div className="text-lg font-bold">{formatCurrency(asset.value)}</div>
-                        </div>
-                      </div>
-                  </CarouselItem>
-                ))}
-              </CarouselContent>
-              <CarouselPrevious className="absolute left-[-10px] text-primary-foreground bg-primary/80 hover:bg-primary" />
-              <CarouselNext className="absolute right-[-10px] text-primary-foreground bg-primary/80 hover:bg-primary" />
-            </Carousel>
-          </div>
         </div>
-      </CardContent>
+        <div className="bg-black/10 p-6 flex items-center">
+          <Carousel
+            opts={{
+              align: "start",
+            }}
+            className="w-full"
+          >
+            <CarouselContent>
+              {allAssets.map((asset, index) => (
+                <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/2">
+                  <div className="flex items-center gap-3 p-4 rounded-lg h-full">
+                      <div className="rounded-full bg-black/20 p-2">
+                        {getAssetIcon(asset.type)}
+                      </div>
+                      <div>
+                        <div className="text-sm text-primary-foreground/80 truncate">{asset.name}</div>
+                        <div className="text-lg font-bold">{formatCurrency(asset.value)}</div>
+                      </div>
+                    </div>
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+            <CarouselPrevious className="absolute left-[-10px] text-primary-foreground bg-primary/80 hover:bg-primary" />
+            <CarouselNext className="absolute right-[-10px] text-primary-foreground bg-primary/80 hover:bg-primary" />
+          </Carousel>
+        </div>
+      </div>
     </Card>
   );
 }
