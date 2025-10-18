@@ -63,11 +63,19 @@ export function AiChat() {
         );
 
       const netWorth = totalAssets - totalLiabilities;
+      
+      const formatCurrency = (value: number) => {
+        return new Intl.NumberFormat("en-IN", {
+          style: "currency",
+          currency: "INR",
+          maximumFractionDigits: 0,
+        }).format(value);
+      };
 
       const financialSummary = `
-        Net Worth: ${netWorth.toLocaleString("en-IN", { style: "currency", currency: "INR" })}
-        Total Assets: ${totalAssets.toLocaleString("en-IN", { style: "currency", currency: "INR" })}
-        Total Liabilities: ${totalLiabilities.toLocaleString("en-IN", { style: "currency", currency: "INR" })}
+        Net Worth: ${formatCurrency(netWorth)}
+        Total Assets: ${formatCurrency(totalAssets)}
+        Total Liabilities: ${formatCurrency(totalLiabilities)}
         Accounts: ${JSON.stringify(accounts)}
         Debts/Loans: ${JSON.stringify(loans)}
         Investments: ${JSON.stringify(investments)}
