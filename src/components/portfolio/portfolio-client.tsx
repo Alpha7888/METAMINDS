@@ -29,15 +29,17 @@ import {
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { Investment } from "@/lib/data";
-import { PlusCircle, Edit, Trash2 } from "lucide-react";
+import { Investment, Loan } from "@/lib/data";
+import { PlusCircle, Edit, Trash2, Landmark, Car } from "lucide-react";
 
 interface PortfolioClientProps {
-  initialData: Investment[];
+  initialInvestments: Investment[];
+  initialLoans: Loan[];
 }
 
-export function PortfolioClient({ initialData }: PortfolioClientProps) {
-  const [investments, setInvestments] = useState(initialData);
+export function PortfolioClient({ initialInvestments, initialLoans }: PortfolioClientProps) {
+  const [investments, setInvestments] = useState(initialInvestments);
+  const [loans, setLoans] = useState(initialLoans);
   const [isEditing, setIsEditing] = useState(false);
   const [currentInvestment, setCurrentInvestment] = useState<Investment | null>(
     null
@@ -45,15 +47,13 @@ export function PortfolioClient({ initialData }: PortfolioClientProps) {
   const [isNew, setIsNew] = useState(false);
   const { toast } = useToast();
 
-  const totalValue = investments.reduce(
+  const totalAssets = investments.reduce(
     (acc, inv) => acc + inv.quantity * inv.currentPrice,
     0
   );
-  const totalGainLoss = investments.reduce(
-    (acc, inv) =>
-      acc + (inv.currentPrice - inv.purchasePrice) * inv.quantity,
-    0
-  );
+  const totalLiabilities = loans.reduce((acc, loan) => acc + loan.remainingBalance, 0);
+  const netWorth = totalAssets - totalLiabilities;
+  
 
   const handleEdit = (investment: Investment) => {
     setCurrentInvestment({ ...investment });
@@ -114,11 +114,18 @@ export function PortfolioClient({ initialData }: PortfolioClientProps) {
     });
   };
 
+  const formatCurrency = (value: number) => {
+    return new Intl.NumberFormat("en-IN", {
+      style: "currency",
+      currency: "INR",
+    }).format(value);
+  }
+
   return (
     <Dialog open={isEditing} onOpenChange={setIsEditing}>
       <div className="space-y-6">
         <div className="flex justify-between items-center">
-          <h1 className="text-3xl font-bold">Investment Portfolio</h1>
+          <h1 className="text-3xl font-bold">Financial Overview</h1>
           <DialogTrigger asChild>
               <Button onClick={handleAddNew}>
                 <PlusCircle className="mr-2 h-4 w-4" /> Add New Investment
@@ -195,34 +202,37 @@ export function PortfolioClient({ initialData }: PortfolioClientProps) {
           </DialogFooter>
         </DialogContent>
 
-        <div className="grid gap-4 md:grid-cols-2">
+        <div className="grid gap-4 md:grid-cols-3">
           <Card>
             <CardHeader>
-              <CardTitle>Total Portfolio Value</CardTitle>
+              <CardTitle>Net Worth</CardTitle>
+              <CardDescription>Assets - Liabilities</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="text-3xl font-bold">
-                {new Intl.NumberFormat("en-IN", {
-                  style: "currency",
-                  currency: "INR",
-                }).format(totalValue)}
+                {formatCurrency(netWorth)}
               </div>
             </CardContent>
           </Card>
           <Card>
             <CardHeader>
-              <CardTitle>Total Gain/Loss</CardTitle>
+              <CardTitle>Total Assets</CardTitle>
+              <CardDescription>Value of all your investments</CardDescription>
             </CardHeader>
             <CardContent>
-              <div
-                className={`text-3xl font-bold ${
-                  totalGainLoss >= 0 ? "text-green-600" : "text-red-600"
-                }`}
-              >
-                {new Intl.NumberFormat("en-IN", {
-                  style: "currency",
-                  currency: "INR",
-                }).format(totalGainLoss)}
+              <div className="text-3xl font-bold">
+                {formatCurrency(totalAssets)}
+              </div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader>
+              <CardTitle>Total Liabilities</CardTitle>
+               <CardDescription>Total outstanding loan balances</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="text-3xl font-bold text-destructive">
+                {formatCurrency(totalLiabilities)}
               </div>
             </CardContent>
           </Card>
@@ -230,9 +240,9 @@ export function PortfolioClient({ initialData }: PortfolioClientProps) {
 
         <Card>
           <CardHeader>
-            <CardTitle>Your Holdings</CardTitle>
+            <CardTitle>Investments</CardTitle>
             <CardDescription>
-              A list of your current investments.
+              A list of your current investment holdings.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -244,16 +254,12 @@ export function PortfolioClient({ initialData }: PortfolioClientProps) {
                   <TableHead className="text-right">Avg. Price</TableHead>
                   <TableHead className="text-right">Current Price</TableHead>
                   <TableHead className="text-right">Total Value</TableHead>
-                  <TableHead className="text-right">Gain/Loss</TableHead>
                   <TableHead className="text-right">Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {investments.map((investment) => {
                   const value = investment.quantity * investment.currentPrice;
-                  const gainLoss =
-                    (investment.currentPrice - investment.purchasePrice) *
-                    investment.quantity;
                   return (
                     <TableRow key={investment.id}>
                       <TableCell className="font-medium">
@@ -263,33 +269,13 @@ export function PortfolioClient({ initialData }: PortfolioClientProps) {
                         {investment.quantity}
                       </TableCell>
                       <TableCell className="text-right">
-                        {new Intl.NumberFormat("en-IN", {
-                          style: "currency",
-                          currency: "INR",
-                        }).format(investment.purchasePrice)}
+                        {formatCurrency(investment.purchasePrice)}
                       </TableCell>
                       <TableCell className="text-right">
-                        {new Intl.NumberFormat("en-IN", {
-                          style: "currency",
-                          currency: "INR",
-                        }).format(investment.currentPrice)}
+                        {formatCurrency(investment.currentPrice)}
                       </TableCell>
                       <TableCell className="text-right">
-                        {new Intl.NumberFormat("en-IN", {
-                          style: "currency",
-          
-                          currency: "INR",
-                        }).format(value)}
-                      </TableCell>
-                      <TableCell
-                        className={`text-right ${
-                          gainLoss >= 0 ? "text-green-600" : "text-red-600"
-                        }`}
-                      >
-                        {new Intl.NumberFormat("en-IN", {
-                          style: "currency",
-                          currency: "INR",
-                        }).format(gainLoss)}
+                        {formatCurrency(value)}
                       </TableCell>
                       <TableCell className="text-right">
                         <DialogTrigger asChild>
@@ -316,6 +302,40 @@ export function PortfolioClient({ initialData }: PortfolioClientProps) {
             </Table>
           </CardContent>
         </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Loans & Liabilities</CardTitle>
+            <CardDescription>
+              Details of your outstanding loans and EMIs.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {loans.map((loan) => (
+              <div key={loan.id} className="flex items-center p-4 border rounded-lg">
+                <div className="flex-shrink-0 mr-4">
+                  {loan.name.toLowerCase().includes('home') ? <Landmark className="h-8 w-8 text-primary" /> : <Car className="h-8 w-8 text-primary" />}
+                </div>
+                <div className="flex-1 grid grid-cols-2 md:grid-cols-4 gap-4 items-center">
+                  <div className="font-medium">{loan.name}</div>
+                  <div>
+                    <div className="text-sm text-muted-foreground">EMI</div>
+                    <div className="font-semibold">{formatCurrency(loan.emi)}/month</div>
+                  </div>
+                   <div>
+                    <div className="text-sm text-muted-foreground">Interest Rate</div>
+                    <div className="font-semibold">{loan.interestRate}%</div>
+                  </div>
+                  <div>
+                    <div className="text-sm text-muted-foreground">Remaining Balance</div>
+                    <div className="font-semibold">{formatCurrency(loan.remainingBalance)}</div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </CardContent>
+        </Card>
+
       </div>
     </Dialog>
   );

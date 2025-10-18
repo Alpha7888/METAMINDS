@@ -43,6 +43,15 @@ export type Investment = {
   currentPrice: number;
 };
 
+export type Loan = {
+  id: string;
+  name: string;
+  principal: number;
+  interestRate: number;
+  emi: number;
+  remainingBalance: number;
+};
+
 export const accounts: Account[] = [
   { id: "acc1", name: "Main Checking", balance: 450000, type: "checking" },
   { id: "acc2", name: "High-Yield Savings", balance: 2000000, type: "savings" },
@@ -156,4 +165,9 @@ export let investments: Investment[] = [
   { id: "inv1", name: "Reliance Industries", quantity: 10, purchasePrice: 2800, currentPrice: 2950 },
   { id: "inv2", name: "Tata Consultancy Services", quantity: 20, purchasePrice: 3800, currentPrice: 3850 },
   { id: "inv3", name: "HDFC Bank", quantity: 50, purchasePrice: 1600, currentPrice: 1670 },
+];
+
+export const loans: Loan[] = [
+    { id: "loan1", name: "Home Loan", principal: 5000000, interestRate: 8.5, emi: 43391, remainingBalance: 4850000 },
+    { id: "loan2", name: "Car Loan", principal: 800000, interestRate: 9.2, emi: 16683, remainingBalance: 650000 },
 ];
