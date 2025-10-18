@@ -31,13 +31,6 @@ const UpcomingBillsCard = dynamic(
     loading: () => <Skeleton className="h-[308px]" />
   }
 );
-const FinancialHealthCard = dynamic(
-  () => import('@/components/dashboard/financial-health-card').then((mod) => mod.FinancialHealthCard),
-  { 
-    ssr: false,
-    loading: () => <Skeleton className="h-[416px]" />
-  }
-);
 const ProactiveInsightsCard = dynamic(
   () => import('@/components/dashboard/proactive-insights-card').then((mod) => mod.ProactiveInsightsCard),
   { 
@@ -45,23 +38,30 @@ const ProactiveInsightsCard = dynamic(
     loading: () => <Skeleton className="h-[310px]" />
   }
 );
+import { RecentTransactionsCard } from './recent-transactions-card';
+import { GoalsSummaryCard } from './goals-summary-card';
 
 export function DashboardClient() {
   return (
     <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-      <div className="lg:col-span-2">
+      <div className="lg:col-span-4">
         <NetWorthCard />
       </div>
-      <div className="lg:col-span-2">
-        <FinancialHealthCard />
-      </div>
-
+      
       <div className="lg:col-span-2">
         <SpendingCard />
       </div>
 
       <div className="lg:col-span-2">
-        <CashFlowCard />
+         <CashFlowCard />
+      </div>
+
+       <div className="lg:col-span-2">
+        <RecentTransactionsCard />
+      </div>
+
+      <div className="lg:col-span-2">
+        <GoalsSummaryCard />
       </div>
 
       <div className="lg:col-span-4">
