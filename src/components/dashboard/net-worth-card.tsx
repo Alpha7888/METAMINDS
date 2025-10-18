@@ -67,9 +67,16 @@ export function NetWorthCard() {
             <p className="text-5xl font-bold tracking-tighter">
               {formatCurrency(netWorth)}
             </p>
-            <p className="text-sm text-primary-foreground/80 mt-1">
-              Your estimated financial value
-            </p>
+             <div className="flex gap-4 justify-center md:justify-start mt-2">
+              <div className="flex items-center gap-1 text-green-300">
+                <ArrowUp className="h-4 w-4" />
+                <span>{formatCurrency(totalAssets)}</span>
+              </div>
+              <div className="flex items-center gap-1 text-red-300">
+                 <ArrowDown className="h-4 w-4" />
+                <span>{formatCurrency(totalLiabilities)}</span>
+              </div>
+            </div>
           </div>
 
           <div className="w-full md:w-3/5">
@@ -78,21 +85,9 @@ export function NetWorthCard() {
                 align: "start",
                 loop: true,
               }}
-              className="w-full max-w-md mx-auto"
+              className="w-full max-w-sm mx-auto"
             >
               <CarouselContent>
-                <CarouselItem className="md:basis-1/2">
-                   <div className="flex items-center gap-3 p-4 rounded-lg bg-black/10">
-                    <div className="rounded-full bg-green-500/20 p-2">
-                      <ArrowUp className="h-5 w-5 text-green-300" />
-                    </div>
-                    <div>
-                      <div className="text-sm text-primary-foreground/80">Total Assets</div>
-                      <div className="text-lg font-bold">{formatCurrency(totalAssets)}</div>
-                    </div>
-                  </div>
-                </CarouselItem>
-
                 {allAssets.map((asset, index) => (
                   <CarouselItem key={index} className="md:basis-1/2">
                      <div className="flex items-center gap-3 p-4 rounded-lg bg-black/10 h-full">
@@ -106,17 +101,6 @@ export function NetWorthCard() {
                       </div>
                   </CarouselItem>
                 ))}
-                 <CarouselItem className="md:basis-1/2">
-                   <div className="flex items-center gap-3 p-4 rounded-lg bg-black/10">
-                    <div className="rounded-full bg-red-500/20 p-2">
-                      <ArrowDown className="h-5 w-5 text-red-300" />
-                    </div>
-                    <div>
-                      <div className="text-sm text-primary-foreground/80">Liabilities</div>
-                      <div className="text-lg font-bold">{formatCurrency(totalLiabilities)}</div>
-                    </div>
-                  </div>
-                </CarouselItem>
               </CarouselContent>
               <CarouselPrevious className="absolute left-[-10px] text-primary-foreground bg-primary/80 hover:bg-primary" />
               <CarouselNext className="absolute right-[-10px] text-primary-foreground bg-primary/80 hover:bg-primary" />
