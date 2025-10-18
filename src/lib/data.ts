@@ -35,6 +35,14 @@ export type Goal = {
   deadline: string;
 };
 
+export type Investment = {
+  id: string;
+  name: string;
+  quantity: number;
+  purchasePrice: number;
+  currentPrice: number;
+};
+
 export const accounts: Account[] = [
   { id: "acc1", name: "Main Checking", balance: 450000, type: "checking" },
   { id: "acc2", name: "High-Yield Savings", balance: 2000000, type: "savings" },
@@ -142,4 +150,10 @@ export const goals: Goal[] = [
     currentAmount: 16000,
     deadline: "2024-10-01",
   },
+];
+
+export let investments: Investment[] = [
+  { id: "inv1", name: "Reliance Industries", quantity: 10, purchasePrice: 2800, currentPrice: 2950 },
+  { id: "inv2", name: "Tata Consultancy Services", quantity: 20, purchasePrice: 3800, currentPrice: 3850 },
+  { id: "inv3", name: "HDFC Bank", quantity: 50, purchasePrice: 1600, currentPrice: 1670 },
 ];

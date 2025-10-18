@@ -18,10 +18,12 @@ import {
   ArrowRightLeft,
   Settings,
   HelpCircle,
+  Briefcase,
 } from "lucide-react";
 
 const navItems = [
   { href: "/dashboard", icon: LayoutDashboard, label: "Dashboard" },
+  { href: "/portfolio", icon: Briefcase, label: "Portfolio" },
   { href: "/budgets", icon: Wallet, label: "Budgets" },
   { href: "/goals", icon: Target, label: "Goals" },
   { href: "/transactions", icon: ArrowRightLeft, label: "Transactions" },
