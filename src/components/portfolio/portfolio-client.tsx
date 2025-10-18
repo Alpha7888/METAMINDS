@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { Pie, PieChart, Cell, Tooltip } from "recharts";
 import {
   Card,
   CardContent,
@@ -16,6 +17,10 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  ChartContainer,
+  ChartTooltipContent,
+} from "@/components/ui/chart";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -120,6 +125,21 @@ export function PortfolioClient({ initialInvestments, initialLoans }: PortfolioC
       currency: "INR",
     }).format(value);
   }
+
+  const chartData = investments.map(investment => ({
+    name: investment.name,
+    value: investment.quantity * investment.currentPrice,
+  }));
+
+  const chartConfig = {
+    value: { label: "Value" },
+    ...Object.fromEntries(
+      chartData.map((d, i) => [
+        d.name,
+        { label: d.name, color: `hsl(var(--chart-${(i % 5) + 1}))` },
+      ])
+    ),
+  };
 
   return (
     <Dialog open={isEditing} onOpenChange={setIsEditing}>
@@ -238,70 +258,120 @@ export function PortfolioClient({ initialInvestments, initialLoans }: PortfolioC
           </Card>
         </div>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Investments</CardTitle>
-            <CardDescription>
-              A list of your current investment holdings.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Name</TableHead>
-                  <TableHead className="text-right">Quantity</TableHead>
-                  <TableHead className="text-right">Avg. Price</TableHead>
-                  <TableHead className="text-right">Current Price</TableHead>
-                  <TableHead className="text-right">Total Value</TableHead>
-                  <TableHead className="text-right">Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {investments.map((investment) => {
-                  const value = investment.quantity * investment.currentPrice;
-                  return (
-                    <TableRow key={investment.id}>
-                      <TableCell className="font-medium">
-                        {investment.name}
-                      </TableCell>
-                      <TableCell className="text-right">
-                        {investment.quantity}
-                      </TableCell>
-                      <TableCell className="text-right">
-                        {formatCurrency(investment.purchasePrice)}
-                      </TableCell>
-                      <TableCell className="text-right">
-                        {formatCurrency(investment.currentPrice)}
-                      </TableCell>
-                      <TableCell className="text-right">
-                        {formatCurrency(value)}
-                      </TableCell>
-                      <TableCell className="text-right">
-                        <DialogTrigger asChild>
+        <div className="grid gap-6 md:grid-cols-5">
+           <Card className="md:col-span-3">
+            <CardHeader>
+              <CardTitle>Investments</CardTitle>
+              <CardDescription>
+                A list of your current investment holdings.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Name</TableHead>
+                    <TableHead className="text-right">Quantity</TableHead>
+                    <TableHead className="text-right">Avg. Price</TableHead>
+                    <TableHead className="text-right">Current Price</TableHead>
+                    <TableHead className="text-right">Total Value</TableHead>
+                    <TableHead className="text-right">Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {investments.map((investment) => {
+                    const value = investment.quantity * investment.currentPrice;
+                    return (
+                      <TableRow key={investment.id}>
+                        <TableCell className="font-medium">
+                          {investment.name}
+                        </TableCell>
+                        <TableCell className="text-right">
+                          {investment.quantity}
+                        </TableCell>
+                        <TableCell className="text-right">
+                          {formatCurrency(investment.purchasePrice)}
+                        </TableCell>
+                        <TableCell className="text-right">
+                          {formatCurrency(investment.currentPrice)}
+                        </TableCell>
+                        <TableCell className="text-right">
+                          {formatCurrency(value)}
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <DialogTrigger asChild>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => handleEdit(investment)}
+                            >
+                              <Edit className="h-4 w-4" />
+                            </Button>
+                          </DialogTrigger>
                           <Button
                             variant="ghost"
                             size="icon"
-                            onClick={() => handleEdit(investment)}
+                            onClick={() => handleDelete(investment.id)}
                           >
-                            <Edit className="h-4 w-4" />
+                            <Trash2 className="h-4 w-4" />
                           </Button>
-                        </DialogTrigger>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => handleDelete(investment.id)}
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
-              </TableBody>
-            </Table>
-          </CardContent>
-        </Card>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
+          <Card className="md:col-span-2">
+            <CardHeader>
+              <CardTitle>Asset Allocation</CardTitle>
+              <CardDescription>
+                A visual breakdown of your investment portfolio.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ChartContainer
+                config={chartConfig}
+                className="mx-auto aspect-square max-h-[250px]"
+              >
+                <PieChart>
+                  <Tooltip
+                    cursor={false}
+                    content={<ChartTooltipContent hideLabel />}
+                  />
+                   <Pie
+                    data={chartData}
+                    dataKey="value"
+                    nameKey="name"
+                    innerRadius={60}
+                    strokeWidth={5}
+                  >
+                    {chartData.map((entry, index) => (
+                      <Cell
+                        key={`cell-${index}`}
+                        fill={chartConfig[entry.name]?.color}
+                      />
+                    ))}
+                  </Pie>
+                </PieChart>
+              </ChartContainer>
+              <div className="flex flex-wrap justify-center gap-x-4 gap-y-2 mt-4 text-sm">
+                {Object.entries(chartConfig)
+                  .filter(([key]) => key !== 'value')
+                  .map(([category, config]) => (
+                    <div key={category} className="flex items-center gap-2">
+                      <span
+                        className="h-2 w-2 rounded-full"
+                        style={{ backgroundColor: config.color }}
+                      />
+                      <span>{config.label}</span>
+                    </div>
+                  ))}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
 
         <Card>
           <CardHeader>
