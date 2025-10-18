@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { Pie, PieChart, Cell, Tooltip } from "recharts";
 import {
   Card,
   CardContent,
@@ -17,10 +16,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {
-  ChartContainer,
-  ChartTooltipContent,
-} from "@/components/ui/chart";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -35,7 +30,13 @@ import {
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { Investment, Loan } from "@/lib/data";
-import { PlusCircle, Edit, Trash2, Landmark, Car } from "lucide-react";
+import { PlusCircle, Edit, Trash2, Landmark, Car, PieChart as PieChartIcon } from "lucide-react";
+import { Pie, PieChart, Cell, Tooltip } from "recharts";
+import {
+  ChartContainer,
+  ChartTooltipContent,
+} from "@/components/ui/chart";
+
 
 interface PortfolioClientProps {
   initialInvestments: Investment[];
@@ -45,7 +46,7 @@ interface PortfolioClientProps {
 export function PortfolioClient({ initialInvestments, initialLoans }: PortfolioClientProps) {
   const [investments, setInvestments] = useState(initialInvestments);
   const [loans, setLoans] = useState(initialLoans);
-  const [isEditing, setIsEditing] = useState(false);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [currentInvestment, setCurrentInvestment] = useState<Investment | null>(
     null
   );
@@ -63,7 +64,7 @@ export function PortfolioClient({ initialInvestments, initialLoans }: PortfolioC
   const handleEdit = (investment: Investment) => {
     setCurrentInvestment({ ...investment });
     setIsNew(false);
-    setIsEditing(true);
+    setIsEditDialogOpen(true);
   };
 
   const handleAddNew = () => {
@@ -75,7 +76,7 @@ export function PortfolioClient({ initialInvestments, initialLoans }: PortfolioC
       currentPrice: 0,
     });
     setIsNew(true);
-    setIsEditing(true);
+    setIsEditDialogOpen(true);
   };
 
   const handleDelete = (id: string) => {
@@ -106,7 +107,7 @@ export function PortfolioClient({ initialInvestments, initialLoans }: PortfolioC
         description: "Investment updated.",
       });
     }
-    setIsEditing(false);
+    setIsEditDialogOpen(false);
     setCurrentInvestment(null);
   };
 
@@ -142,15 +143,13 @@ export function PortfolioClient({ initialInvestments, initialLoans }: PortfolioC
   };
 
   return (
-    <Dialog open={isEditing} onOpenChange={setIsEditing}>
+    <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
       <div className="space-y-6">
         <div className="flex justify-between items-center">
           <h1 className="text-3xl font-bold">Financial Overview</h1>
-          <DialogTrigger asChild>
-              <Button onClick={handleAddNew}>
-                <PlusCircle className="mr-2 h-4 w-4" /> Add New Investment
-              </Button>
-            </DialogTrigger>
+          <Button onClick={handleAddNew}>
+            <PlusCircle className="mr-2 h-4 w-4" /> Add New Investment
+          </Button>
         </div>
 
         <DialogContent>
@@ -299,19 +298,18 @@ export function PortfolioClient({ initialInvestments, initialLoans }: PortfolioC
                           {formatCurrency(value)}
                         </TableCell>
                         <TableCell className="text-right">
-                          <DialogTrigger asChild>
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              onClick={() => handleEdit(investment)}
-                            >
-                              <Edit className="h-4 w-4" />
-                            </Button>
-                          </DialogTrigger>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => handleEdit(investment)}
+                          >
+                            <Edit className="h-4 w-4" />
+                          </Button>
                           <Button
                             variant="ghost"
                             size="icon"
                             onClick={() => handleDelete(investment.id)}
+                            className="text-destructive hover:text-destructive"
                           >
                             <Trash2 className="h-4 w-4" />
                           </Button>
@@ -338,7 +336,7 @@ export function PortfolioClient({ initialInvestments, initialLoans }: PortfolioC
                 <PieChart>
                   <Tooltip
                     cursor={false}
-                    content={<ChartTooltipContent hideLabel />}
+                    content={<ChartTooltipContent hideLabel formatter={(value) => formatCurrency(value as number)} />}
                   />
                    <Pie
                     data={chartData}
@@ -405,7 +403,6 @@ export function PortfolioClient({ initialInvestments, initialLoans }: PortfolioC
             ))}
           </CardContent>
         </Card>
-
       </div>
     </Dialog>
   );
