@@ -83,13 +83,13 @@ export function NetWorthCard() {
              <Carousel
               opts={{
                 align: "start",
-                loop: true,
+                loop: false,
               }}
               className="w-full max-w-sm mx-auto"
             >
               <CarouselContent>
                 {allAssets.map((asset, index) => (
-                  <CarouselItem key={index} className="md:basis-1/2">
+                  <CarouselItem key={index} className="basis-1/2 md:basis-1/2">
                      <div className="flex items-center gap-3 p-4 rounded-lg bg-black/10 h-full">
                         <div className="rounded-full bg-black/20 p-2">
                           {getAssetIcon(asset.type)}
