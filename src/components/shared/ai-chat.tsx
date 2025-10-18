@@ -17,7 +17,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useToast } from "@/hooks/use-toast";
 import { answerFinancialQuery } from "@/ai/flows/answer-financial-queries";
-import { accounts, transactions } from "@/lib/data";
+import { accounts, transactions, loans, investments } from "@/lib/data";
 
 type Message = {
   role: "user" | "assistant";
@@ -44,10 +44,34 @@ export function AiChat() {
     setIsLoading(true);
 
     try {
-      // Create a financial summary for the AI
+      // Create a comprehensive financial summary for the AI
+      const totalAssets =
+        accounts
+          .filter((acc) => acc.type !== "credit")
+          .reduce((sum, account) => sum + account.balance, 0) +
+        investments.reduce(
+          (sum, inv) => sum + inv.quantity * inv.currentPrice,
+          0
+        );
+
+      const totalLiabilities =
+        loans.reduce((acc, loan) => acc + loan.remainingBalance, 0) +
+        Math.abs(
+          accounts
+            .filter((acc) => acc.type === "credit")
+            .reduce((sum, account) => sum + account.balance, 0)
+        );
+
+      const netWorth = totalAssets - totalLiabilities;
+
       const financialSummary = `
+        Net Worth: ${netWorth.toLocaleString("en-IN", { style: "currency", currency: "INR" })}
+        Total Assets: ${totalAssets.toLocaleString("en-IN", { style: "currency", currency: "INR" })}
+        Total Liabilities: ${totalLiabilities.toLocaleString("en-IN", { style: "currency", currency: "INR" })}
         Accounts: ${JSON.stringify(accounts)}
-        Recent Transactions: ${JSON.stringify(transactions.slice(0, 5))}
+        Debts/Loans: ${JSON.stringify(loans)}
+        Investments: ${JSON.stringify(investments)}
+        Recent Transactions: ${JSON.stringify(transactions.slice(0, 10))}
       `;
 
       const result = await answerFinancialQuery({
