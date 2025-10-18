@@ -50,8 +50,10 @@ export function MainNav() {
                   isActive={pathname === item.href}
                   tooltip={item.label}
                 >
-                  <item.icon />
-                  <span>{item.label}</span>
+                  <>
+                    <item.icon />
+                    <span>{item.label}</span>
+                  </>
                 </SidebarMenuButton>
               </Link>
             </SidebarMenuItem>
