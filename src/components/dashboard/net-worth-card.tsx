@@ -20,9 +20,9 @@ export function NetWorthCard() {
       </CardHeader>
       <CardContent>
         <div className="text-4xl font-bold">
-          {new Intl.NumberFormat("en-US", {
+          {new Intl.NumberFormat("en-IN", {
             style: "currency",
-            currency: "USD",
+            currency: "INR",
           }).format(netWorth)}
         </div>
         <p className="text-xs text-muted-foreground mt-2">

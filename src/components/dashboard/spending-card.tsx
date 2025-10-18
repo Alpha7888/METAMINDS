@@ -79,9 +79,9 @@ export function SpendingCard() {
               dominantBaseline="middle"
               className="fill-foreground text-2xl font-bold"
             >
-              {new Intl.NumberFormat("en-US", {
+              {new Intl.NumberFormat("en-IN", {
                 style: "currency",
-                currency: "USD",
+                currency: "INR",
                 maximumFractionDigits: 0,
               }).format(totalSpent)}
             </text>

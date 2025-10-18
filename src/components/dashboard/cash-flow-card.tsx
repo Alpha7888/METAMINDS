@@ -55,7 +55,7 @@ export function CashFlowCard() {
               axisLine={false}
               tickMargin={8}
               fontSize={12}
-              tickFormatter={(value) => `$${value / 1000}k`}
+              tickFormatter={(value) => `₹${value / 1000}k`}
             />
             <Tooltip cursor={false} content={<ChartTooltipContent />} />
             <Bar

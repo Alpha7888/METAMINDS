@@ -37,9 +37,9 @@ export function UpcomingBillsCard() {
               </div>
               <div className="text-right">
                  <p className="text-sm font-semibold">
-                  {new Intl.NumberFormat("en-US", {
+                  {new Intl.NumberFormat("en-IN", {
                     style: "currency",
-                    currency: "USD",
+                    currency: "INR",
                   }).format(bill.amount)}
                 </p>
                  <button className="text-xs text-primary hover:underline">Pay now</button>
