@@ -115,207 +115,208 @@ export function PortfolioClient({ initialData }: PortfolioClientProps) {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold">Investment Portfolio</h1>
-        <Dialog open={isEditing} onOpenChange={setIsEditing}>
+    <Dialog open={isEditing} onOpenChange={setIsEditing}>
+      <div className="space-y-6">
+        <div className="flex justify-between items-center">
+          <h1 className="text-3xl font-bold">Investment Portfolio</h1>
           <DialogTrigger asChild>
-            <Button onClick={handleAddNew}>
-              <PlusCircle className="mr-2 h-4 w-4" /> Add New Investment
-            </Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>
-                {isNew ? "Add New Investment" : "Edit Investment"}
-              </DialogTitle>
-            </DialogHeader>
-            {currentInvestment && (
-              <div className="grid gap-4 py-4">
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="name" className="text-right">
-                    Name
-                  </Label>
-                  <Input
-                    id="name"
-                    name="name"
-                    value={currentInvestment.name}
-                    onChange={handleChange}
-                    className="col-span-3"
-                  />
-                </div>
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="quantity" className="text-right">
-                    Quantity
-                  </Label>
-                  <Input
-                    id="quantity"
-                    name="quantity"
-                    type="number"
-                    value={currentInvestment.quantity}
-                    onChange={handleChange}
-                    className="col-span-3"
-                  />
-                </div>
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="purchasePrice" className="text-right">
-                    Purchase Price (₹)
-                  </Label>
-                  <Input
-                    id="purchasePrice"
-                    name="purchasePrice"
-                    type="number"
-                    value={currentInvestment.purchasePrice}
-                    onChange={handleChange}
-                    className="col-span-3"
-                  />
-                </div>
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="currentPrice" className="text-right">
-                    Current Price (₹)
-                  </Label>
-                  <Input
-                    id="currentPrice"
-                    name="currentPrice"
-                    type="number"
-                    value={currentInvestment.currentPrice}
-                    onChange={handleChange}
-                    className="col-span-3"
-                  />
-                </div>
+              <Button onClick={handleAddNew}>
+                <PlusCircle className="mr-2 h-4 w-4" /> Add New Investment
+              </Button>
+            </DialogTrigger>
+        </div>
+
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>
+              {isNew ? "Add New Investment" : "Edit Investment"}
+            </DialogTitle>
+          </DialogHeader>
+          {currentInvestment && (
+            <div className="grid gap-4 py-4">
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="name" className="text-right">
+                  Name
+                </Label>
+                <Input
+                  id="name"
+                  name="name"
+                  value={currentInvestment.name}
+                  onChange={handleChange}
+                  className="col-span-3"
+                />
               </div>
-            )}
-            <DialogFooter>
-              <DialogClose asChild>
-                <Button variant="outline">Cancel</Button>
-              </DialogClose>
-              <Button onClick={handleSave}>Save</Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
-      </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="quantity" className="text-right">
+                  Quantity
+                </Label>
+                <Input
+                  id="quantity"
+                  name="quantity"
+                  type="number"
+                  value={currentInvestment.quantity}
+                  onChange={handleChange}
+                  className="col-span-3"
+                />
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="purchasePrice" className="text-right">
+                  Purchase Price (₹)
+                </Label>
+                <Input
+                  id="purchasePrice"
+                  name="purchasePrice"
+                  type="number"
+                  value={currentInvestment.purchasePrice}
+                  onChange={handleChange}
+                  className="col-span-3"
+                />
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="currentPrice" className="text-right">
+                  Current Price (₹)
+                </Label>
+                <Input
+                  id="currentPrice"
+                  name="currentPrice"
+                  type="number"
+                  value={currentInvestment.currentPrice}
+                  onChange={handleChange}
+                  className="col-span-3"
+                />
+              </div>
+            </div>
+          )}
+          <DialogFooter>
+            <DialogClose asChild>
+              <Button variant="outline">Cancel</Button>
+            </DialogClose>
+            <Button onClick={handleSave}>Save</Button>
+          </DialogFooter>
+        </DialogContent>
 
-      <div className="grid gap-4 md:grid-cols-2">
+        <div className="grid gap-4 md:grid-cols-2">
+          <Card>
+            <CardHeader>
+              <CardTitle>Total Portfolio Value</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-3xl font-bold">
+                {new Intl.NumberFormat("en-IN", {
+                  style: "currency",
+                  currency: "INR",
+                }).format(totalValue)}
+              </div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader>
+              <CardTitle>Total Gain/Loss</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div
+                className={`text-3xl font-bold ${
+                  totalGainLoss >= 0 ? "text-green-600" : "text-red-600"
+                }`}
+              >
+                {new Intl.NumberFormat("en-IN", {
+                  style: "currency",
+                  currency: "INR",
+                }).format(totalGainLoss)}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
         <Card>
           <CardHeader>
-            <CardTitle>Total Portfolio Value</CardTitle>
+            <CardTitle>Your Holdings</CardTitle>
+            <CardDescription>
+              A list of your current investments.
+            </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold">
-              {new Intl.NumberFormat("en-IN", {
-                style: "currency",
-                currency: "INR",
-              }).format(totalValue)}
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader>
-            <CardTitle>Total Gain/Loss</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div
-              className={`text-3xl font-bold ${
-                totalGainLoss >= 0 ? "text-green-600" : "text-red-600"
-              }`}
-            >
-              {new Intl.NumberFormat("en-IN", {
-                style: "currency",
-                currency: "INR",
-              }).format(totalGainLoss)}
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>Your Holdings</CardTitle>
-          <CardDescription>
-            A list of your current investments.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Name</TableHead>
-                <TableHead className="text-right">Quantity</TableHead>
-                <TableHead className="text-right">Avg. Price</TableHead>
-                <TableHead className="text-right">Current Price</TableHead>
-                <TableHead className="text-right">Total Value</TableHead>
-                <TableHead className="text-right">Gain/Loss</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {investments.map((investment) => {
-                const value = investment.quantity * investment.currentPrice;
-                const gainLoss =
-                  (investment.currentPrice - investment.purchasePrice) *
-                  investment.quantity;
-                return (
-                  <TableRow key={investment.id}>
-                    <TableCell className="font-medium">
-                      {investment.name}
-                    </TableCell>
-                    <TableCell className="text-right">
-                      {investment.quantity}
-                    </TableCell>
-                    <TableCell className="text-right">
-                      {new Intl.NumberFormat("en-IN", {
-                        style: "currency",
-                        currency: "INR",
-                      }).format(investment.purchasePrice)}
-                    </TableCell>
-                    <TableCell className="text-right">
-                      {new Intl.NumberFormat("en-IN", {
-                        style: "currency",
-                        currency: "INR",
-                      }).format(investment.currentPrice)}
-                    </TableCell>
-                    <TableCell className="text-right">
-                      {new Intl.NumberFormat("en-IN", {
-                        style: "currency",
-        
-                        currency: "INR",
-                      }).format(value)}
-                    </TableCell>
-                    <TableCell
-                      className={`text-right ${
-                        gainLoss >= 0 ? "text-green-600" : "text-red-600"
-                      }`}
-                    >
-                      {new Intl.NumberFormat("en-IN", {
-                        style: "currency",
-                        currency: "INR",
-                      }).format(gainLoss)}
-                    </TableCell>
-                    <TableCell className="text-right">
-                      <DialogTrigger asChild>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Name</TableHead>
+                  <TableHead className="text-right">Quantity</TableHead>
+                  <TableHead className="text-right">Avg. Price</TableHead>
+                  <TableHead className="text-right">Current Price</TableHead>
+                  <TableHead className="text-right">Total Value</TableHead>
+                  <TableHead className="text-right">Gain/Loss</TableHead>
+                  <TableHead className="text-right">Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {investments.map((investment) => {
+                  const value = investment.quantity * investment.currentPrice;
+                  const gainLoss =
+                    (investment.currentPrice - investment.purchasePrice) *
+                    investment.quantity;
+                  return (
+                    <TableRow key={investment.id}>
+                      <TableCell className="font-medium">
+                        {investment.name}
+                      </TableCell>
+                      <TableCell className="text-right">
+                        {investment.quantity}
+                      </TableCell>
+                      <TableCell className="text-right">
+                        {new Intl.NumberFormat("en-IN", {
+                          style: "currency",
+                          currency: "INR",
+                        }).format(investment.purchasePrice)}
+                      </TableCell>
+                      <TableCell className="text-right">
+                        {new Intl.NumberFormat("en-IN", {
+                          style: "currency",
+                          currency: "INR",
+                        }).format(investment.currentPrice)}
+                      </TableCell>
+                      <TableCell className="text-right">
+                        {new Intl.NumberFormat("en-IN", {
+                          style: "currency",
+          
+                          currency: "INR",
+                        }).format(value)}
+                      </TableCell>
+                      <TableCell
+                        className={`text-right ${
+                          gainLoss >= 0 ? "text-green-600" : "text-red-600"
+                        }`}
+                      >
+                        {new Intl.NumberFormat("en-IN", {
+                          style: "currency",
+                          currency: "INR",
+                        }).format(gainLoss)}
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <DialogTrigger asChild>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => handleEdit(investment)}
+                          >
+                            <Edit className="h-4 w-4" />
+                          </Button>
+                        </DialogTrigger>
                         <Button
                           variant="ghost"
                           size="icon"
-                          onClick={() => handleEdit(investment)}
+                          onClick={() => handleDelete(investment.id)}
                         >
-                          <Edit className="h-4 w-4" />
+                          <Trash2 className="h-4 w-4" />
                         </Button>
-                      </DialogTrigger>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => handleDelete(investment.id)}
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
-    </div>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
+      </div>
+    </Dialog>
   );
 }
